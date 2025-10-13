@@ -24,4 +24,19 @@ public String encode(){
             Long.toString(AcceptID)
             )+ "\n";
 }
+public Message decode(String line){
+    String [] p = line.trim().split("\\|",-1);
+    MessageType t = MessageType.valueOf(p[0]);
+    String from = p[1];
+    String to = p[2];
+    long ProposalNumber = Long.parseLong(p[3]);
+    String Candidate = p[4].isEmpty() ? null :p[4];
+    long AcceptID = Long.parseLong(p[5]);
+    return new Message(t,from,to,ProposalNumber,Candidate,AcceptID);
 }
+    @Override
+    public String toString() {
+    return encode().trim();
+}
+}
+
