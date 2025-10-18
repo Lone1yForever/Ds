@@ -1,29 +1,40 @@
 import java.util.concurrent.ThreadLocalRandom;
 
+/**
+ * Simulate different network conditions
+ * Members have 4 different situation : reliable/standard/latent/failure
+ */
 public interface Profile {
     default void Delay(){}
+
+    /**
+     * @return true = loss
+     */
     default boolean shouldDrop(){return false;}
-    static Profile reliable(){return new Profile(){};}
-    static Profile standard(){
+    static Profile reliable(){return new Profile(){};} // no loss
+    static Profile standard(){   // no loss
         return new Profile(){
             @Override public void Delay(){
                 sleepRand(10,60);
             }
     };
     }
-    static Profile latent(){
+    static Profile latent(){ //high latency
         return new Profile(){
             @Override public void Delay(){sleepRand(150,600);}
             @Override public boolean shouldDrop() { return ThreadLocalRandom.current().nextDouble() < 0.05; }
         };
     }
-    static Profile failure(){
+    static Profile failure(){ // Mid  latency . High packet loss probability
         return new Profile(){
-            @Override public void Delay(){sleepRand(50, 200);}
-            @Override public boolean shouldDrop() { return ThreadLocalRandom.current().nextDouble() < 0.20; }
+            @Override
+            public void Delay(){sleepRand(50, 200);}
+            @Override
+            public boolean shouldDrop() { return ThreadLocalRandom.current().nextDouble() < 0.20; }
         };
     }
     private static void sleepRand(int minMs, int maxMs) {
-        try { Thread.sleep(ThreadLocalRandom.current().nextInt(minMs, maxMs + 1)); } catch (InterruptedException ignored) {}
+        try { Thread.sleep(ThreadLocalRandom.current().nextInt(minMs, maxMs + 1));
+        } catch (InterruptedException ignored) {}
     }
 }

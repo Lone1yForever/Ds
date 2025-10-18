@@ -1,3 +1,4 @@
+
 public final class Message {
     public final MessageType type;
     public final String from;
@@ -5,7 +6,15 @@ public final class Message {
     public final long ProposalNumber;
     public final String Candidate;
     public final long AcceptID;
-
+    /**
+     * Creat a Message object
+     * @param type             Message type
+     * @param from             Sender ID
+     * @param to               Receiver ID
+     * @param ProposalNumber   Proposition
+     * @param Candidate        M1-M9
+     * @param AcceptID 。      Max ProposalNumber
+     */
 public Message (MessageType type,String from,String to,long ProposalNumber,String Candidate,long AcceptID){
     this.type = type;
     this.from = from;
@@ -14,6 +23,22 @@ public Message (MessageType type,String from,String to,long ProposalNumber,Strin
     this.Candidate = Candidate;
     this.AcceptID = AcceptID;
 }
+    /**
+     *
+     * @param from Sender ID
+     * @param to   Sender ID
+     * @param Candidate M1-M9
+     * @return ADMIN_PROPOSE type Message
+     */
+    public static Message adminPropose(String from,String to,String Candidate){
+    return new Message(MessageType.ADMIN_PROPOSE, from, to, -1, Candidate, -1);
+}
+
+    /**
+     * Encode the message into text, format like: <code>｜</code>
+     * @return String can write in Socket
+     */
+
 public String encode(){
     return String.join("|",
             type.name(),
@@ -24,7 +49,11 @@ public String encode(){
             Long.toString(AcceptID)
             )+ "\n";
 }
-public Message decode(String line){
+/**
+ * @param line Text separated by '｜'
+ * @return decode Message
+ */
+public static Message decode(String line){
     String [] p = line.trim().split("\\|",-1);
     MessageType t = MessageType.valueOf(p[0]);
     String from = p[1];
@@ -34,6 +63,11 @@ public Message decode(String line){
     long AcceptID = Long.parseLong(p[5]);
     return new Message(t,from,to,ProposalNumber,Candidate,AcceptID);
 }
+
+    /**
+     * Convenient for display
+     * @return String
+     */
     @Override
     public String toString() {
     return encode().trim();
