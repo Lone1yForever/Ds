@@ -15,13 +15,13 @@ public interface Profile {
     static Profile standard(){   // no loss
         return new Profile(){
             @Override public void Delay(){
-                sleepRand(10,60);
+                sleepRand(5,30);
             }
     };
     }
     static Profile latent(){ //high latency
         return new Profile(){
-            @Override public void Delay(){sleepRand(150,600);}
+            @Override public void Delay(){sleepRand(200,600);}
             @Override public boolean shouldDrop() { return ThreadLocalRandom.current().nextDouble() < 0.05; }
         };
     }
@@ -30,7 +30,7 @@ public interface Profile {
             @Override
             public void Delay(){sleepRand(50, 200);}
             @Override
-            public boolean shouldDrop() { return ThreadLocalRandom.current().nextDouble() < 0.20; }
+            public boolean shouldDrop() { return ThreadLocalRandom.current().nextDouble() < 0.15; }
         };
     }
     private static void sleepRand(int minMs, int maxMs) {

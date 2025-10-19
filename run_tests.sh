@@ -11,23 +11,27 @@ MEMBERS=(M1 M2 M3 M4 M5 M6 M7 M8 M9)
 PROFILES_RELIABLE=(reliable reliable reliable reliable reliable reliable reliable reliable reliable)
 PROFILES_MIXED=(reliable latent failure standard standard standard standard standard standard)
 
-set -euo pipefail
-
+free_ports() {
+  for p in {9001..9009}; do
+    pid="$(lsof -ti tcp:$p)"
+    if [ -n "$pid" ]; then
+      kill "$pid" 2>/dev/null || true
+      sleep 0.2
+      kill -9 "$pid" 2>/dev/null || true
+      echo "[FREE] port $p (pid $pid)"
+    fi
+  done
+}
 cleanup() {
   echo "[CLEANUP] stopping members..."
   if [[ -f .pids ]]; then
-    xargs -r kill < .pids || true
+    xargs kill < .pids 2>/dev/null || true
     sleep 0.5
-    xargs -r kill -9 < .pids || true
+    xargs kill -9 < .pids 2>/dev/null || true
     rm -f .pids
   fi
 }
 trap cleanup EXIT
-
-ensure_java() {
-  command -v java  >/dev/null || { echo "Java 未安装"; exit 1; }
-  command -v javac >/dev/null || { echo "javac 未安装"; exit 1; }
-}
 
 prepare() {
   mkdir -p "$LOG_DIR" "$CLASSPATH"
@@ -121,7 +125,6 @@ scenario_3() {
   cleanup
 }
 
-ensure_java
 prepare
 
 echo "=== Test Scenario 1 ==="; scenario_1

@@ -1,0 +1,48 @@
+This is a candidate election system based on the Paxos algorithm
+This assignment is written based on Java11 and macOS
+===========================================================================================
+This system have 3 states
+1.Prepare / Promise
+The Proposer puts forward a proposal
+2.Accept Request / Accepted
+The Proposer counts the number of promises
+3.Learner
+Learner learns the final result and broadcasts it
+===========================================================================================
+If you are using IDEA, you can directly run the run_tests.sh.
+If you use the terminal（MacOS...) please use these steps
+===========================================================================================
+Method 1
+chmod +x run_tests.sh
+./run_tests.sh
+===========================================================================================
+Method 2
+1. mkdir -p out
+   javac -d out *.java  Put all the compiled files into the "out" folder
+
+2. Open 9 terminals     Four possible situations ：reliable standard latent failure
+   open -a Terminal "$HOME/Desktop/assignment3" * 9
+
+3. Terminal 1
+   java -cp out CouncilMember M1 --profile standard --config network.config
+   Terminal 2
+   java -cp out CouncilMember M2 --profile standard --config network.config
+   Terminal 3
+   java -cp out CouncilMember M3 --profile standard --config network.config
+   Terminal 4
+   java -cp out CouncilMember M4 --profile standard --config network.config
+   Terminal 5
+   java -cp out CouncilMember M5 --profile standard --config network.config
+   Terminal 6
+   java -cp out CouncilMember M6 --profile standard --config network.config
+   Terminal 7
+   java -cp out CouncilMember M7 --profile standard --config network.config
+   Terminal 8
+   java -cp out CouncilMember M8 --profile standard --config network.config
+   Terminal 9
+   java -cp out CouncilMember M9 --profile standard --config network.config
+   If successful, you will receive a text like "[M2] LISTENING on 9002"
+
+4.Randomly select a port to make a proposal
+  propose M8
+  If successful, you will receive a text like "CONSENSUS: M8 has been elected Council President!"
